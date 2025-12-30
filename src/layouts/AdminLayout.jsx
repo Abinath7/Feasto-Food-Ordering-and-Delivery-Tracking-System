@@ -9,6 +9,10 @@ const AdminLayout = () => {
     { path: '/admin/dashboard', label: 'Dashboard', icon: '📊' },
     { path: '/admin/menu', label: 'Manage Menu', icon: '🍽️' },
     { path: '/admin/orders', label: 'Manage Orders', icon: '📦' },
+    { path: '/admin/delivery-staff', label: 'Manage Delivery Staff', icon: '🚚' },
+    { path: '/admin/enquiries', label: 'Customer Enquiries', icon: '💬' },
+    { path: '/admin/order-history', label: 'Order History', icon: '📋' },
+    { path: '/admin/stock-report', label: 'Stock Report', icon: '📦' },
   ];
 
   return (

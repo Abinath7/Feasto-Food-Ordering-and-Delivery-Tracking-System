@@ -52,18 +52,19 @@ const Login = () => {
 
     try {
       const user = await login(formData.email, formData.password);
+      // Redirect to role-based dashboard
       switch (user.role) {
         case 'customer':
-          navigate('/customer/dashboard');
+          navigate('/customer/dashboard', { replace: true });
           break;
         case 'admin':
-          navigate('/admin/dashboard');
+          navigate('/admin/dashboard', { replace: true });
           break;
         case 'delivery':
-          navigate('/delivery/dashboard');
+          navigate('/delivery/dashboard', { replace: true });
           break;
         default:
-          navigate('/');
+          navigate('/', { replace: true });
       }
     } catch (error) {
       setApiError(error.message || 'Login failed. Please try again.');
@@ -86,26 +87,36 @@ const Login = () => {
 
       {/* Content */}
       <div className="relative z-10 max-w-md w-full px-4">
-        {/* Header */}
-        <div className="text-center mb-6">
-          <h1 className="text-4xl font-extrabold text-red-600 mb-1">🍔 Feasto</h1>
-          <p className="text-sm text-gray-200">Fast • Fresh • Delivered</p>
-          <h2 className="mt-4 text-2xl font-bold text-white">
-            Login to your account
-          </h2>
-          <p className="mt-2 text-sm text-gray-300">
-            Or{' '}
-            <Link
-              to="/register"
-              className="text-red-400 hover:text-red-300 font-medium"
-            >
-              create a new account
-            </Link>
-          </p>
-        </div>
+        {/* Close Button */}
+        <button
+          onClick={() => navigate(-1)}
+          className="absolute -top-2 right-2 text-gray-600 hover:text-gray-900 text-4xl font-bold transition z-20 bg-white rounded-full w-10 h-10 flex items-center justify-center"
+          aria-label="Close"
+        >
+          ×
+        </button>
 
-        {/* Card */}
-        <Card>
+        {/* White Card Container */}
+        <div className="bg-white rounded-2xl shadow-2xl p-8">
+          {/* Header */}
+          <div className="text-center mb-6">
+            <h1 className="text-4xl font-extrabold text-red-600 mb-1">🍔 Feasto</h1>
+            <p className="text-sm text-gray-700">Fast • Fresh • Delivered</p>
+            <h2 className="mt-4 text-2xl font-bold text-gray-900">
+              Login to your account
+            </h2>
+            <p className="mt-2 text-sm text-gray-600">
+              Or{' '}
+              <Link
+                to="/register"
+                className="text-red-600 hover:text-red-700 font-medium"
+              >
+                create a new account
+              </Link>
+            </p>
+          </div>
+
+          {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
             {apiError && (
               <div className="bg-red-50 border border-red-400 text-red-700 px-4 py-3 rounded">
@@ -155,7 +166,7 @@ const Login = () => {
             <p>Admin: admin@feasto.com</p>
             <p>Delivery: delivery@feasto.com</p>
           </div>
-        </Card>
+        </div>
       </div>
     </div>
   );
