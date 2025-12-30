@@ -8,6 +8,10 @@ import CustomerLayout from './layouts/CustomerLayout';
 import AdminLayout from './layouts/AdminLayout';
 import DeliveryLayout from './layouts/DeliveryLayout';
 
+// Landing Page
+import LandingPage from './pages/LandingPage';
+import GuestMenu from './pages/GuestMenu';
+
 // Pages
 import About from './pages/About';
 import Contact from './pages/Contact';
@@ -26,9 +30,16 @@ import MyOrders from './pages/customer/MyOrders';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import ManageMenu from './pages/admin/ManageMenu';
 import ManageOrders from './pages/admin/ManageOrders';
+import ManageDeliveryStaff from './pages/admin/ManageDeliveryStaff';
+import CustomerEnquiries from './pages/admin/CustomerEnquiries';
+import OrderHistory from './pages/admin/OrderHistory';
+import StockReport from './pages/admin/StockReport';
 
 // Delivery Pages
 import DeliveryDashboard from './pages/delivery/DeliveryDashboard';
+
+// 404 Page
+import NotFound from './pages/NotFound';
 
 function App() {
   return (
@@ -37,14 +48,7 @@ function App() {
         <Routes>
           {/* Public Routes */}
           <Route path="/" element={<MainLayout />}>
-            <Route
-              index
-              element={
-                <PublicRoute>
-                  <Login />
-                </PublicRoute>
-              }
-            />
+            <Route index element={<LandingPage />} />
             <Route
               path="login"
               element={
@@ -69,23 +73,10 @@ function App() {
                 </PublicRoute>
               }
             />
+            <Route path="menu" element={<GuestMenu />} />
             {/* About & Contact Pages */}
-            <Route
-              path="about"
-              element={
-                <PublicRoute>
-                  <About />
-                </PublicRoute>
-              }
-            />
-            <Route
-              path="contact"
-              element={
-                <PublicRoute>
-                  <Contact />
-                </PublicRoute>
-              }
-            />
+            <Route path="about" element={<About />} />
+            <Route path="contact" element={<Contact />} />
           </Route>
 
           {/* Protected Route for Change Password */}
@@ -109,6 +100,7 @@ function App() {
               </ProtectedRoute>
             }
           >
+            <Route index element={<Navigate to="/customer/dashboard" replace />} />
             <Route path="dashboard" element={<CustomerDashboard />} />
             <Route path="orders" element={<MyOrders />} />
           </Route>
@@ -122,9 +114,14 @@ function App() {
               </ProtectedRoute>
             }
           >
+            <Route index element={<Navigate to="/admin/dashboard" replace />} />
             <Route path="dashboard" element={<AdminDashboard />} />
             <Route path="menu" element={<ManageMenu />} />
             <Route path="orders" element={<ManageOrders />} />
+            <Route path="delivery-staff" element={<ManageDeliveryStaff />} />
+            <Route path="enquiries" element={<CustomerEnquiries />} />
+            <Route path="order-history" element={<OrderHistory />} />
+            <Route path="stock-report" element={<StockReport />} />
           </Route>
 
           {/* Delivery Routes */}
@@ -136,11 +133,12 @@ function App() {
               </ProtectedRoute>
             }
           >
+            <Route index element={<Navigate to="/delivery/dashboard" replace />} />
             <Route path="dashboard" element={<DeliveryDashboard />} />
           </Route>
 
-          {/* Catch all - redirect to login */}
-          <Route path="*" element={<Navigate to="/login" replace />} />
+          {/* Catch all - 404 page */}
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>
     </AuthProvider>

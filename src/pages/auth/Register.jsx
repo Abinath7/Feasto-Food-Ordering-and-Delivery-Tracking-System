@@ -91,7 +91,16 @@ const Register = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full">
+      <div className="max-w-md w-full relative">
+        {/* Close Button */}
+        <button
+          onClick={() => navigate(-1)}
+          className="absolute -top-4 right-0 text-gray-600 hover:text-gray-900 text-3xl font-bold transition"
+          aria-label="Close"
+        >
+          ×
+        </button>
+
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-primary-600 mb-2">🍔 Feasto</h1>
           <h2 className="text-3xl font-bold text-gray-900">Create your account</h2>

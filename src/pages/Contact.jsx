@@ -6,6 +6,7 @@ const Contact = () => {
     email: '',
     message: '',
   });
+  const [submitted, setSubmitted] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -13,8 +14,25 @@ const Contact = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    alert('Message sent successfully! 🍔');
+    
+    // Save to localStorage
+    const existingEnquiries = JSON.parse(localStorage.getItem('customerEnquiries') || '[]');
+    const newEnquiry = {
+      id: Date.now(),
+      ...formData,
+      date: new Date().toISOString(),
+      status: 'new',
+      subject: 'Contact Form Submission',
+      phone: 'Not provided'
+    };
+    existingEnquiries.push(newEnquiry);
+    localStorage.setItem('customerEnquiries', JSON.stringify(existingEnquiries));
+    
+    setSubmitted(true);
     setFormData({ name: '', email: '', message: '' });
+    
+    // Reset success message after 3 seconds
+    setTimeout(() => setSubmitted(false), 3000);
   };
 
   return (
@@ -30,6 +48,12 @@ const Contact = () => {
             We’d love to hear from you!
           </p>
         </div>
+
+        {submitted && (
+          <div className="mb-6 bg-green-50 border border-green-400 text-green-700 px-4 py-3 rounded-lg text-center">
+            ✓ Message sent successfully! We'll get back to you soon. 🍔
+          </div>
+        )}
 
         <div className="grid md:grid-cols-2 gap-10">
 
