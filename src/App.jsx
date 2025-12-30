@@ -8,6 +8,10 @@ import CustomerLayout from './layouts/CustomerLayout';
 import AdminLayout from './layouts/AdminLayout';
 import DeliveryLayout from './layouts/DeliveryLayout';
 
+// Pages
+import About from './pages/About';
+import Contact from './pages/Contact';
+
 // Auth Pages
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
@@ -62,6 +66,23 @@ function App() {
               element={
                 <PublicRoute>
                   <ForgotPassword />
+                </PublicRoute>
+              }
+            />
+            {/* About & Contact Pages */}
+            <Route
+              path="about"
+              element={
+                <PublicRoute>
+                  <About />
+                </PublicRoute>
+              }
+            />
+            <Route
+              path="contact"
+              element={
+                <PublicRoute>
+                  <Contact />
                 </PublicRoute>
               }
             />

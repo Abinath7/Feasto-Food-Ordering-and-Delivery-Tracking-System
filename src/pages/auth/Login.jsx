@@ -18,7 +18,6 @@ const Login = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-    // Clear error when user starts typing
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: '' }));
     }
@@ -46,7 +45,6 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
     if (!validate()) return;
 
     setLoading(true);
@@ -54,8 +52,6 @@ const Login = () => {
 
     try {
       const user = await login(formData.email, formData.password);
-      
-      // Redirect based on role
       switch (user.role) {
         case 'customer':
           navigate('/customer/dashboard');
@@ -77,19 +73,38 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-primary-600 mb-2">🍔 Feasto</h1>
-          <h2 className="text-3xl font-bold text-gray-900">Sign in to your account</h2>
-          <p className="mt-2 text-sm text-gray-600">
+    <div
+      
+  className="min-h-screen flex items-center justify-center bg-no-repeat bg-contain bg-center relative"
+ 
+
+
+      style={{ backgroundImage: "url('/feasto1.avif')" }}
+    >
+      {/* Dark overlay */}
+      <div className="absolute inset-0 bg-black/50"></div>
+
+      {/* Content */}
+      <div className="relative z-10 max-w-md w-full px-4">
+        {/* Header */}
+        <div className="text-center mb-6">
+          <h1 className="text-4xl font-extrabold text-red-600 mb-1">🍔 Feasto</h1>
+          <p className="text-sm text-gray-200">Fast • Fresh • Delivered</p>
+          <h2 className="mt-4 text-2xl font-bold text-white">
+            Login to your account
+          </h2>
+          <p className="mt-2 text-sm text-gray-300">
             Or{' '}
-            <Link to="/register" className="text-primary-600 hover:text-primary-700 font-medium">
+            <Link
+              to="/register"
+              className="text-red-400 hover:text-red-300 font-medium"
+            >
               create a new account
             </Link>
           </p>
         </div>
 
+        {/* Card */}
         <Card>
           <form onSubmit={handleSubmit} className="space-y-4">
             {apiError && (
@@ -120,12 +135,13 @@ const Login = () => {
               required
             />
 
-            <div className="flex items-center justify-between">
-              <div className="text-sm">
-                <Link to="/forgot-password" className="text-primary-600 hover:text-primary-700">
-                  Forgot your password?
-                </Link>
-              </div>
+            <div className="flex justify-end text-sm">
+              <Link
+                to="/forgot-password"
+                className="text-red-600 hover:text-red-700"
+              >
+                Forgot your password?
+              </Link>
             </div>
 
             <Button type="submit" fullWidth disabled={loading}>
@@ -133,13 +149,11 @@ const Login = () => {
             </Button>
           </form>
 
-          <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-            <p className="text-sm font-semibold text-gray-700 mb-2">Demo Accounts:</p>
-            <div className="text-xs text-gray-600 space-y-1">
-              <p>👤 Customer: customer@feasto.com / customer123</p>
-              <p>👑 Admin: admin@feasto.com / admin123</p>
-              <p>🚚 Delivery: delivery@feasto.com / delivery123</p>
-            </div>
+          {/* Demo accounts */}
+          <div className="mt-6 text-xs text-gray-500 text-center space-y-1">
+            <p>Customer: customer@feasto.com</p>
+            <p>Admin: admin@feasto.com</p>
+            <p>Delivery: delivery@feasto.com</p>
           </div>
         </Card>
       </div>
