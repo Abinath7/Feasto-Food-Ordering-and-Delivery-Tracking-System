@@ -5,6 +5,7 @@ import Input from '../../components/Input';
 import Button from '../../components/Button';
 import Card from '../../components/Card';
 import { validateEmail, validatePassword, validatePhone } from '../../utils/helpers';
+import Logo from "../../assets/logo.png";
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -102,7 +103,10 @@ const Register = () => {
         </button>
 
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-primary-600 mb-2">🍔 Feasto</h1>
+          <div className="flex items-center justify-center gap-3 mb-4">
+              <img src={Logo} alt="Feasto Logo" className="h-20 w-auto" />
+                  <span className="text-2xl font-bold text-black">Feasto</span>
+          </div>
           <h2 className="text-3xl font-bold text-gray-900">Create your account</h2>
           <p className="mt-2 text-sm text-gray-600">
             Already have an account?{' '}

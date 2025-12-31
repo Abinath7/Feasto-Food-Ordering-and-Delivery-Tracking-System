@@ -90,12 +90,12 @@ const GuestMenu = () => {
               </div>
               <div className="flex gap-3">
                 <Link to="/register">
-                  <Button className="bg-white text-primary-600 hover:bg-gray-100">
+                  <Button className="bg-white text !text-black hover:bg-gray-100">
                     Sign Up Now
                   </Button>
                 </Link>
                 <Link to="/login">
-                  <Button variant="outline" className="border-white text-white hover:bg-white/10">
+                  <Button className="bg-white text !text-black hover:bg-gray-100">
                     Login
                   </Button>
                 </Link>

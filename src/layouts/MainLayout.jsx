@@ -1,6 +1,7 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 import Navbar from '../components/Navbar';
+import Logo from "../assets/logo.png";
 
 const MainLayout = () => {
   const scrollToSection = (id) => {
@@ -20,9 +21,16 @@ const MainLayout = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
-              <h3 className="text-2xl font-bold text-primary-400 mb-4">🍔 Feasto</h3>
+              <div className="flex items-center gap-3 mb-4">
+                <img src={Logo} alt="Feasto Logo" className="h-20 w-auto" />
+                <span className="text-2xl font-bold text-white">Feasto</span>
+              </div>
+
               <p className="text-gray-400">
-                Your favorite food, delivered with care.
+                Your favorite food,
+              </p>
+              <p className="text-gray-400">
+                delivered with care.
               </p>
             </div>
             <div>
