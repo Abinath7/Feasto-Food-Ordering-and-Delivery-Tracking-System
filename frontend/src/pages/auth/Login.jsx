@@ -88,17 +88,16 @@ const Login = () => {
 
       {/* Content */}
       <div className="relative z-10 max-w-md w-full px-4">
-        {/* Close Button */}
-        <button
-          onClick={() => navigate(-1)}
-          className="absolute -top-2 right-2 text-gray-600 hover:text-gray-900 text-4xl font-bold transition z-20 bg-white rounded-full w-10 h-10 flex items-center justify-center"
-          aria-label="Close"
-        >
-          ×
-        </button>
-
         {/* White Card Container */}
-        <div className="bg-white rounded-2xl shadow-2xl p-8">
+        <div className="bg-white rounded-2xl shadow-2xl p-8 relative">
+          {/* Close Button */}
+          <button
+            onClick={() => navigate('/')}
+            className="absolute -top-4 -right-4 text-gray-600 hover:text-gray-900 text-3xl font-bold transition z-20 bg-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg hover:bg-gray-100"
+            aria-label="Close"
+          >
+            ×
+          </button>
           {/* Header */}
           <div className="text-center mb-6">
 
