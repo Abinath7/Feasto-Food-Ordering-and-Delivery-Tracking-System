@@ -2,6 +2,7 @@ import React, { useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Button from './Button';
+import Logo from "../assets/logo.png";
 
 const Navbar = () => {
   const { user, logout } = useAuth();
@@ -70,7 +71,10 @@ const Navbar = () => {
         <div className="flex justify-between h-16 items-center">
           {/* Logo */}
           <Link to={getDashboardLink()} className="flex items-center text-2xl font-bold text-primary-600">
-            🍔 Feasto
+            <div className="flex items-center gap-3 mb-4">
+              <img src={Logo} alt="Feasto Logo" className="h-20 w-auto" />
+                <span className="text-2xl font-bold text-Black">Feasto</span>
+            </div>
           </Link>
 
           {/* Links */}

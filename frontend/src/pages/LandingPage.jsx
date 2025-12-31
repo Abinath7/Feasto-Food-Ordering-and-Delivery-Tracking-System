@@ -2,6 +2,8 @@ import React, { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Button from '../components/Button';
+import HeroBg from "../assets/background.png";
+
 
 const LandingPage = () => {
   const { user } = useAuth();
@@ -22,12 +24,17 @@ const LandingPage = () => {
     <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-orange-50">
       {/* Hero Section */}
       <div id="home" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+       
+        <div className="relative bg-cover bg-center bg-no-repeat py-24"
+          style={{ backgroundImage: `url(${HeroBg})` }}
+        >
+        <div className="absolute inset-0 bg-black/10 pointer-events-none"></div>
         <div className="text-center">
           <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
             Delicious Food,
             <span className="text-primary-600"> Delivered Fast</span>
           </h1>
-          <p className="text-xl text-gray-600 mb-10 max-w-2xl mx-auto">
+          <p className="text-xl font-semibold text-black-600 mb-10 max-w-2xl mx-auto">
             Order from your favorite restaurants and track your delivery in real-time. 
             Fresh, hot, and delivered right to your door.
           </p>
@@ -36,9 +43,11 @@ const LandingPage = () => {
               <Button className="px-8 py-3 text-lg">Browse Menu</Button>
             </Link>
             <Link to="/register">
-              <Button variant="outline" className="px-8 py-3 text-lg">Sign Up</Button>
+              <Button className="px-8 py-3 text-lg">Sign Up</Button>
             </Link>
           </div>
+        </div>
+
         </div>
 
         {/* Features Grid */}
@@ -115,7 +124,7 @@ const LandingPage = () => {
             Join thousands of satisfied customers enjoying delicious meals
           </p>
           <Link to="/register">
-            <Button className="bg-white text-primary-600 hover:bg-gray-100 px-8 py-3 text-lg">
+            <Button className="bg-white !text-black hover:bg-gray-100 px-8 py-3 text-lg">
               Create Free Account
             </Button>
           </Link>

@@ -5,6 +5,7 @@ import Input from '../../components/Input';
 import Button from '../../components/Button';
 import Card from '../../components/Card';
 import { validateEmail, validatePassword } from '../../utils/helpers';
+import Logo from "../../assets/logo.png";
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
@@ -99,7 +100,12 @@ const Login = () => {
           </button>
           {/* Header */}
           <div className="text-center mb-6">
-            <h1 className="text-4xl font-extrabold text-red-600 mb-1">🍔 Feasto</h1>
+
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <img src={Logo} alt="Feasto Logo" className="h-20 w-auto" />
+                <span className="text-2xl font-bold text-black">Feasto</span>
+            </div>
+
             <p className="text-sm text-gray-700">Fast • Fresh • Delivered</p>
             <h2 className="mt-4 text-2xl font-bold text-gray-900">
               Login to your account
