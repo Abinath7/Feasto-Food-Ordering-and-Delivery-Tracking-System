@@ -13,8 +13,8 @@ const DeliveryDashboard = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filterStatus, setFilterStatus] = useState('all');
-  const [selectedOrder, setSelectedOrder] = useState(null);
-  const [showStatusModal, setShowStatusModal] = useState(false);
+  const [ setSelectedOrder] = useState(null);
+  const [ setShowStatusModal] = useState(false);
   const [stats, setStats] = useState({
     total: 0,
     pending: 0,

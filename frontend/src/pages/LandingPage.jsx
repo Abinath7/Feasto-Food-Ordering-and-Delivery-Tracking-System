@@ -1,13 +1,21 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Button from '../components/Button';
 import HeroBg from "../assets/background.png";
+import Dishes1 from "../assets/dishes1.jpg";
+import Noodle from "../assets/noodle.jpg";
+import Kebab from "../assets/beyti-kebab-served-with-ayran-pickles.jpg";
+import Chicken from "../assets/chicken_wings.jpg";
 
 
 const LandingPage = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  // Array of hero images
+  const heroImages = [HeroBg, Dishes1, Noodle, Kebab, Chicken];
 
   useEffect(() => {
     // Redirect admin and delivery staff to their dashboards
@@ -20,21 +28,33 @@ const LandingPage = () => {
     }
   }, [user, navigate]);
 
+  // Auto-change images every 4 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prevIndex) => 
+        prevIndex === heroImages.length - 1 ? 0 : prevIndex + 1
+      );
+    }, 4000); // Change image every 4 seconds
+
+    return () => clearInterval(interval);
+  }, [heroImages.length]);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-orange-50">
       {/* Hero Section */}
       <div id="home" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
        
-        <div className="relative bg-cover bg-center bg-no-repeat py-24"
-          style={{ backgroundImage: `url(${HeroBg})` }}
+        <div 
+          className="relative bg-cover bg-center bg-no-repeat py-24 transition-all duration-1000 ease-in-out rounded-2xl overflow-hidden"
+          style={{ backgroundImage: `url(${heroImages[currentImageIndex]})` }}
         >
-        <div className="absolute inset-0 bg-black/10 pointer-events-none"></div>
-        <div className="text-center">
-          <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
+        <div className="absolute inset-0 bg-black/40 pointer-events-none"></div>
+        <div className="text-center relative z-10">
+          <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 drop-shadow-2xl" style={{ textShadow: '2px 2px 8px rgba(0,0,0,0.8), 0 0 25px rgba(0,0,0,0.5)' }}>
             Delicious Food,
-            <span className="text-primary-600"> Delivered Fast</span>
+            <span className="text-red-500"> Delivered Fast</span>
           </h1>
-          <p className="text-xl font-semibold text-black-600 mb-10 max-w-2xl mx-auto">
+          <p className="text-xl font-semibold text-white mb-10 max-w-2xl mx-auto drop-shadow-2xl" style={{ textShadow: '1px 1px 4px rgba(0,0,0,0.8), 0 0 15px rgba(0,0,0,0.5)' }}>
             Order from your favorite restaurants and track your delivery in real-time. 
             Fresh, hot, and delivered right to your door.
           </p>
@@ -46,6 +66,22 @@ const LandingPage = () => {
               <Button className="px-8 py-3 text-lg">Sign Up</Button>
             </Link>
           </div>
+        </div>
+
+        {/* Image Indicators */}
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex gap-2 z-10">
+          {heroImages.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentImageIndex(index)}
+              className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                index === currentImageIndex 
+                  ? 'bg-primary-600 w-8' 
+                  : 'bg-white/50 hover:bg-white/80'
+              }`}
+              aria-label={`Go to slide ${index + 1}`}
+            />
+          ))}
         </div>
 
         </div>
