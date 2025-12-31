@@ -14,7 +14,6 @@ import GuestMenu from './pages/GuestMenu';
 
 // Pages
 import About from './pages/About';
-import Contact from './pages/Contact';
 
 // Auth Pages
 import Login from './pages/auth/Login';
@@ -74,9 +73,8 @@ function App() {
               }
             />
             <Route path="menu" element={<GuestMenu />} />
-            {/* About & Contact Pages */}
+            {/* About Page */}
             <Route path="about" element={<About />} />
-            <Route path="contact" element={<Contact />} />
           </Route>
 
           {/* Protected Route for Change Password */}

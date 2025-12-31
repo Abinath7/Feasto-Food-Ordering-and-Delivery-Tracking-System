@@ -1,65 +1,54 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Card from '../../components/Card';
 import Button from '../../components/Button';
+import Loading from '../../components/Loading';
+import contactService from '../../services/contactService';
 
 const CustomerEnquiries = () => {
-  const getInitialEnquiries = () => {
-    const saved = localStorage.getItem('customerEnquiries');
-    if (saved) {
-      return JSON.parse(saved);
-    }
-    // Mock data for demonstration
-    const mockEnquiries = [
-      {
-        id: 1,
-        customerName: 'John Doe',
-        email: 'john@example.com',
-        phone: '+94 77 123 4567',
-        subject: 'Delivery Issue',
-        message: 'My order was delayed by 30 minutes. Please ensure better delivery times.',
-        date: new Date().toISOString(),
-        status: 'new',
-      },
-      {
-        id: 2,
-        customerName: 'Jane Smith',
-        email: 'jane@example.com',
-        phone: '+94 11 234 5678',
-        subject: 'Food Quality',
-        message: 'The pizza I ordered was cold when it arrived. Can you improve packaging?',
-        date: new Date(Date.now() - 86400000).toISOString(),
-        status: 'reviewed',
-      },
-      {
-        id: 3,
-        customerName: 'Mike Johnson',
-        email: 'mike@example.com',
-        phone: '+94 77 987 6543',
-        subject: 'Payment Problem',
-        message: 'I was charged twice for the same order. Please refund the duplicate charge.',
-        date: new Date(Date.now() - 172800000).toISOString(),
-        status: 'new',
-      },
-    ];
-    localStorage.setItem('customerEnquiries', JSON.stringify(mockEnquiries));
-    return mockEnquiries;
-  };
-
-  const [enquiries, setEnquiries] = useState(getInitialEnquiries);
+  const [enquiries, setEnquiries] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [selectedEnquiry, setSelectedEnquiry] = useState(null);
+  const [updating, setUpdating] = useState(false);
+
+  useEffect(() => {
+    loadEnquiries();
+  }, []);
+
+  const loadEnquiries = async () => {
+    try {
+      setLoading(true);
+      const data = await contactService.getAllEnquiries();
+      setEnquiries(data);
+    } catch (error) {
+      console.error('Error loading enquiries:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
   };
 
-  const markAsReviewed = (id) => {
-    const updated = enquiries.map(enq =>
-      enq.id === id ? { ...enq, status: 'reviewed' } : enq
-    );
-    setEnquiries(updated);
-    localStorage.setItem('customerEnquiries', JSON.stringify(updated));
+  const markAsReviewed = async (id) => {
+    try {
+      setUpdating(true);
+      await contactService.updateEnquiryStatus(id, 'reviewed');
+      setEnquiries(enquiries.map(enq =>
+        enq.id === id ? { ...enq, status: 'reviewed' } : enq
+      ));
+      if (selectedEnquiry?.id === id) {
+        setSelectedEnquiry({ ...selectedEnquiry, status: 'reviewed' });
+      }
+    } catch (error) {
+      console.error('Error updating enquiry:', error);
+    } finally {
+      setUpdating(false);
+    }
   };
+
+  if (loading) return <Loading />;
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
@@ -78,19 +67,19 @@ const CustomerEnquiries = () => {
             >
               <div className="flex justify-between items-start mb-2">
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900">{enquiry.subject}</h3>
-                  <p className="text-sm text-gray-600">{enquiry.customerName}</p>
+                  <h3 className="text-lg font-semibold text-gray-900">{enquiry.subject || 'No Subject'}</h3>
+                  <p className="text-sm text-gray-600">{enquiry.name}</p>
                 </div>
                 <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                  enquiry.status === 'new'
+                  enquiry.status === 'new' || enquiry.status === 'pending'
                     ? 'bg-yellow-100 text-yellow-800'
                     : 'bg-green-100 text-green-800'
                 }`}>
-                  {enquiry.status === 'new' ? 'New' : 'Reviewed'}
+                  {enquiry.status === 'new' || enquiry.status === 'pending' ? 'New' : 'Reviewed'}
                 </span>
               </div>
               <p className="text-sm text-gray-700 mb-2 line-clamp-2">{enquiry.message}</p>
-              <p className="text-xs text-gray-500">{formatDate(enquiry.date)}</p>
+              <p className="text-xs text-gray-500">{formatDate(enquiry.created_at)}</p>
             </Card>
           ))}
 
@@ -110,12 +99,12 @@ const CustomerEnquiries = () => {
               <div className="space-y-3">
                 <div>
                   <label className="text-sm font-semibold text-gray-700">Subject</label>
-                  <p className="text-gray-900">{selectedEnquiry.subject}</p>
+                  <p className="text-gray-900">{selectedEnquiry.subject || 'No Subject'}</p>
                 </div>
 
                 <div>
                   <label className="text-sm font-semibold text-gray-700">Customer Name</label>
-                  <p className="text-gray-900">{selectedEnquiry.customerName}</p>
+                  <p className="text-gray-900">{selectedEnquiry.name}</p>
                 </div>
 
                 <div>
@@ -125,12 +114,12 @@ const CustomerEnquiries = () => {
 
                 <div>
                   <label className="text-sm font-semibold text-gray-700">Phone</label>
-                  <p className="text-gray-900">{selectedEnquiry.phone}</p>
+                  <p className="text-gray-900">{selectedEnquiry.phone || 'Not provided'}</p>
                 </div>
 
                 <div>
                   <label className="text-sm font-semibold text-gray-700">Date</label>
-                  <p className="text-gray-900">{formatDate(selectedEnquiry.date)}</p>
+                  <p className="text-gray-900">{formatDate(selectedEnquiry.created_at)}</p>
                 </div>
 
                 <div>
@@ -138,12 +127,13 @@ const CustomerEnquiries = () => {
                   <p className="text-gray-900 whitespace-pre-wrap">{selectedEnquiry.message}</p>
                 </div>
 
-                {selectedEnquiry.status === 'new' && (
+                {(selectedEnquiry.status === 'new' || selectedEnquiry.status === 'pending') && (
                   <Button
                     onClick={() => markAsReviewed(selectedEnquiry.id)}
+                    disabled={updating}
                     className="w-full mt-4"
                   >
-                    Mark as Reviewed
+                    {updating ? 'Updating...' : 'Mark as Reviewed'}
                   </Button>
                 )}
               </div>

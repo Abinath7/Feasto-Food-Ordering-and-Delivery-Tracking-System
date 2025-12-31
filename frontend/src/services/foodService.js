@@ -1,67 +1,145 @@
-import { mockFoodItems } from '../utils/mockData';
+// API Base URL - Django Backend
+const API_BASE_URL = 'http://localhost:8000/api';
 
-const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+// Helper function for API requests
+const apiRequest = async (endpoint, options = {}) => {
+  const url = `${API_BASE_URL}${endpoint}`;
+  
+  const defaultOptions = {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include', // Include cookies for session auth
+  };
+
+  const response = await fetch(url, { ...defaultOptions, ...options });
+  
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({ message: 'Request failed' }));
+    throw new Error(error.message || error.detail || 'Request failed');
+  }
+
+  // Handle empty responses (like DELETE which returns 204 No Content)
+  if (response.status === 204 || response.headers.get('content-length') === '0') {
+    return { success: true };
+  }
+
+  return response.json();
+};
 
 const foodService = {
-  // Get all food items
+  // Get all food items from Django backend
   getAllFoodItems: async () => {
-    await delay(300);
-    return [...mockFoodItems];
+    try {
+      const response = await apiRequest('/food/');
+      // Handle paginated response from DRF
+      const items = response.results || response;
+      return items.map(item => ({
+        id: item.id,
+        name: item.name,
+        description: item.description,
+        price: parseFloat(item.price),
+        category: item.category,
+        image: item.image,
+        available: item.available,
+      }));
+    } catch (error) {
+      console.error('Error fetching food items:', error);
+      throw new Error('Unable to fetch menu items. Please ensure the backend server is running.');
+    }
   },
 
   // Get food item by ID
   getFoodItemById: async (id) => {
-    await delay(300);
-    const item = mockFoodItems.find(item => item.id === id);
-    if (!item) {
-      throw new Error('Food item not found');
+    try {
+      const item = await apiRequest(`/food/${id}/`);
+      return {
+        id: item.id,
+        name: item.name,
+        description: item.description,
+        price: parseFloat(item.price),
+        category: item.category,
+        image: item.image,
+        available: item.available,
+      };
+    } catch (error) {
+      console.error('Error fetching food item:', error);
+      throw error;
     }
-    return item;
   },
 
   // Add food item (admin only)
   addFoodItem: async (foodData) => {
-    await delay(500);
-    const newItem = {
-      id: mockFoodItems.length + 1,
-      ...foodData,
-      available: true,
-    };
-    mockFoodItems.push(newItem);
-    return newItem;
+    try {
+      // Map image to image_url for backend
+      const payload = {
+        name: foodData.name,
+        description: foodData.description,
+        price: foodData.price,
+        category: foodData.category,
+        image_url: foodData.image || foodData.image_url,
+        available: foodData.available !== undefined ? foodData.available : true,
+      };
+      const response = await apiRequest('/food/', {
+        method: 'POST',
+        body: JSON.stringify(payload),
+      });
+      return response;
+    } catch (error) {
+      console.error('Error adding food item:', error);
+      throw error;
+    }
   },
 
   // Update food item (admin only)
   updateFoodItem: async (id, foodData) => {
-    await delay(500);
-    const index = mockFoodItems.findIndex(item => item.id === id);
-    if (index === -1) {
-      throw new Error('Food item not found');
+    try {
+      // Map image to image_url for backend
+      const payload = {
+        name: foodData.name,
+        description: foodData.description,
+        price: foodData.price,
+        category: foodData.category,
+        image_url: foodData.image || foodData.image_url,
+        available: foodData.available !== undefined ? foodData.available : true,
+      };
+      const response = await apiRequest(`/food/${id}/`, {
+        method: 'PUT',
+        body: JSON.stringify(payload),
+      });
+      return response;
+    } catch (error) {
+      console.error('Error updating food item:', error);
+      throw error;
     }
-    mockFoodItems[index] = { ...mockFoodItems[index], ...foodData };
-    return mockFoodItems[index];
   },
 
   // Delete food item (admin only)
   deleteFoodItem: async (id) => {
-    await delay(500);
-    const index = mockFoodItems.findIndex(item => item.id === id);
-    if (index === -1) {
-      throw new Error('Food item not found');
+    try {
+      await apiRequest(`/food/${id}/`, {
+        method: 'DELETE',
+      });
+      return { message: 'Food item deleted successfully' };
+    } catch (error) {
+      console.error('Error deleting food item:', error);
+      throw error;
     }
-    mockFoodItems.splice(index, 1);
-    return { message: 'Food item deleted successfully' };
   },
 
   // Toggle availability
   toggleAvailability: async (id) => {
-    await delay(300);
-    const item = mockFoodItems.find(item => item.id === id);
-    if (!item) {
-      throw new Error('Food item not found');
+    try {
+      const item = await foodService.getFoodItemById(id);
+      const response = await apiRequest(`/food/${id}/`, {
+        method: 'PATCH',
+        body: JSON.stringify({ available: !item.available }),
+      });
+      return response;
+    } catch (error) {
+      console.error('Error toggling availability:', error);
+      throw error;
     }
-    item.available = !item.available;
-    return item;
   },
 };
 
