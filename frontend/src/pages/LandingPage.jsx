@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Button from '../components/Button';
+import contactService from '../services/contactService';
 import HeroBg from "../assets/background.png";
 import Dishes1 from "../assets/dishes1.jpg";
 import Noodle from "../assets/noodle.jpg";
@@ -13,6 +14,46 @@ const LandingPage = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  
+  // Contact form state
+  const [contactForm, setContactForm] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    message: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState('');
+
+  // Handle contact form input changes
+  const handleContactChange = (e) => {
+    const { name, value } = e.target;
+    setContactForm(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  // Handle contact form submission
+  const handleContactSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitError('');
+    setSubmitSuccess(false);
+
+    try {
+      await contactService.submitEnquiry(contactForm);
+      setSubmitSuccess(true);
+      setContactForm({ name: '', email: '', phone: '', message: '' });
+      // Clear success message after 5 seconds
+      setTimeout(() => setSubmitSuccess(false), 5000);
+    } catch (error) {
+      setSubmitError(error.message || 'Failed to send message. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   // Array of hero images
   const heroImages = [HeroBg, Dishes1, Noodle, Kebab, Chicken];
@@ -326,13 +367,27 @@ const LandingPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
             {/* Contact Form */}
             <div className="bg-white rounded-xl shadow-lg p-8">
-              <form className="space-y-6">
+              {submitSuccess && (
+                <div className="mb-6 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg">
+                  Thank you for your message! We'll get back to you soon.
+                </div>
+              )}
+              {submitError && (
+                <div className="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+                  {submitError}
+                </div>
+              )}
+              <form onSubmit={handleContactSubmit} className="space-y-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Full Name
                   </label>
                   <input
                     type="text"
+                    name="name"
+                    value={contactForm.name}
+                    onChange={handleContactChange}
+                    required
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                     placeholder="John Doe"
                   />
@@ -344,6 +399,10 @@ const LandingPage = () => {
                   </label>
                   <input
                     type="email"
+                    name="email"
+                    value={contactForm.email}
+                    onChange={handleContactChange}
+                    required
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                     placeholder="john@example.com"
                   />
@@ -355,6 +414,9 @@ const LandingPage = () => {
                   </label>
                   <input
                     type="tel"
+                    name="phone"
+                    value={contactForm.phone}
+                    onChange={handleContactChange}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                     placeholder="+1 234 567 8900"
                   />
@@ -366,12 +428,22 @@ const LandingPage = () => {
                   </label>
                   <textarea
                     rows="4"
+                    name="message"
+                    value={contactForm.message}
+                    onChange={handleContactChange}
+                    required
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                     placeholder="How can we help you?"
                   ></textarea>
                 </div>
 
-                <Button className="w-full">Send Message</Button>
+                <Button 
+                  type="submit" 
+                  className="w-full"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? 'Sending...' : 'Send Message'}
+                </Button>
               </form>
             </div>
 
